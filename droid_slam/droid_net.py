@@ -15,7 +15,7 @@ from geom.ba import BA
 import geom.projective_ops as pops
 from geom.graph_utils import graph_to_edge_list, keyframe_indicies
 
-from torch_scatter import scatter_mean
+from segmean import segment_mean_fixed
 
 
 def cvx_upsample(data, mask):
@@ -60,11 +60,11 @@ class GraphAgg(nn.Module):
         batch, num, ch, ht, wd = net.shape
         net = net.view(batch*num, ch, ht, wd)
 
-        _, ix = torch.unique(ii, return_inverse=True)
+        kx, ix = torch.unique(ii, return_inverse=True)
         net = self.relu(self.conv1(net))
 
         net = net.view(batch, num, 128, ht, wd)
-        net = scatter_mean(net, ix, dim=1)
+        net = segment_mean_fixed(net, ix, kx.shape[0])
         net = net.view(-1, 128, ht, wd)
 
         net = self.relu(self.conv2(net))
