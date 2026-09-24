@@ -62,8 +62,13 @@ pip install moderngl moderngl-window
 pip install thirdparty/lietorch
 pip install thirdparty/pytorch_scatter
 
-# install droid-backends
-pip install -e .
+# install droid-backends (the CUDA extension; python package below)
+pip install --no-build-isolation ./src
+
+# install the python package (or let colcon build it from a ROS workspace:
+# the strapsai CHIRON stack clones this repo into reid_ws/src and builds only
+# droid_slam/; src/ and thirdparty/ carry COLCON_IGNORE)
+pip install ./droid_slam
 ```
 
 <!-- ### Deprecated Conda Installation
